@@ -13,7 +13,7 @@ interface StatusCardProps {
 }
 
 interface Installation {
-  id: string;
+  id: string | number;
   user_id?: string;
   name: string;
   type: string;
@@ -35,7 +35,7 @@ interface Installation {
 }
 
 interface Plant {
-  id: string;
+  id: string | number;
   installation_id: string;
   name: string;
   plant_date: string;
@@ -49,7 +49,7 @@ export function Installation() {
 
   const [installations, setInstallations] = useState<Installation[]>([
     {
-      id: 'inst-1',
+      id: 1,
       name: 'Instalasi 1',
       type: 'Dewasa',
       model: 'NFT',
@@ -66,7 +66,7 @@ export function Installation() {
       connection_status: 'connected'
     },
     {
-      id: 'inst-2', 
+      id: 2, 
       name: 'Instalasi 2',
       type: 'Dewasa',
       model: 'DFT',
@@ -83,7 +83,7 @@ export function Installation() {
       connection_status: 'connected'
     },
     {
-      id: 'inst-3', 
+      id: 3, 
       name: 'Instalasi 3',
       type: 'Dewasa',
       model: 'DFT',

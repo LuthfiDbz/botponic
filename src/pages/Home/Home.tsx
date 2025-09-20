@@ -10,7 +10,7 @@ import { Header } from '../../components/Header/Header';
 
 // TypeScript interfaces
 interface Installation {
-  id: string;
+  id: string | number;
   user_id?: string;
   name: string;
   type: string;
@@ -32,8 +32,8 @@ interface Installation {
 }
 
 interface Plant {
-  id: string;
-  installation_id: string;
+  id: string | number;
+  installation_id: string | number;
   name: string;
   plant_date: string;
   growth_stage: 'benih' | 'vegetatif' | 'generatif';
@@ -44,7 +44,7 @@ interface Plant {
 interface Reminder {
   id: string;
   user_id?: string;
-  installation_id: string;
+  installation_id: string | number;
   plant_id?: string;
   reminder_type: 'watering' | 'nutrient' | 'ph_check' | 'other';
   reminder_date: string;
@@ -58,7 +58,7 @@ interface MeasurementHistory {
   temperature: number;
   ph: number;
   humidity: number;
-  installation_id: string;
+  installation_id: string | number;
 }
 
 interface MeasurementFormData {
@@ -86,7 +86,7 @@ const HydroponicApp: React.FC = () => {
   // Mock data dengan proper TypeScript typing
   const [installations, setInstallations] = useState<Installation[]>([
     {
-      id: 'inst-1',
+      id: 1,
       name: 'Instalasi 1',
       type: 'Dewasa',
       model: 'NFT',
@@ -103,7 +103,7 @@ const HydroponicApp: React.FC = () => {
       connection_status: 'connected'
     },
     {
-      id: 'inst-2', 
+      id: 2, 
       name: 'Instalasi 2',
       type: 'Dewasa',
       model: 'DFT',
@@ -123,21 +123,21 @@ const HydroponicApp: React.FC = () => {
 
   const [plants, setPlants] = useState<Plant[]>([
     {
-      id: 'plant-1',
+      id: 1,
       installation_id: 'inst-1',
       name: 'Selada Hijau A1',
       plant_date: '2024-09-01',
       growth_stage: 'vegetatif'
     },
     {
-      id: 'plant-2',
+      id: 2,
       installation_id: 'inst-1', 
       name: 'Selada Hijau A2',
       plant_date: '2024-09-01',
       growth_stage: 'vegetatif'
     },
     {
-      id: 'plant-3',
+      id: 3,
       installation_id: 'inst-2',
       name: 'Selada Merah B1',
       plant_date: '2024-09-05',
@@ -163,11 +163,11 @@ const HydroponicApp: React.FC = () => {
   ]);
 
   const [measurementHistory, setMeasurementHistory] = useState<MeasurementHistory[]>([
-    { date: '2024-09-15', temperature: 23.5, ph: 6.0, humidity: 72, installation_id: 'inst-1' },
-    { date: '2024-09-16', temperature: 24.2, ph: 6.1, humidity: 74, installation_id: 'inst-1' },
-    { date: '2024-09-17', temperature: 24.8, ph: 6.3, humidity: 76, installation_id: 'inst-1' },
-    { date: '2024-09-18', temperature: 24.1, ph: 6.2, humidity: 75, installation_id: 'inst-1' },
-    { date: '2024-09-19', temperature: 24.5, ph: 6.2, humidity: 75, installation_id: 'inst-1' }
+    { date: '2024-09-15', temperature: 23.5, ph: 6.0, humidity: 72, installation_id: 1 },
+    { date: '2024-09-16', temperature: 24.2, ph: 6.1, humidity: 74, installation_id: 1 },
+    { date: '2024-09-17', temperature: 24.8, ph: 6.3, humidity: 76, installation_id: 1 },
+    { date: '2024-09-18', temperature: 24.1, ph: 6.2, humidity: 75, installation_id: 1 },
+    { date: '2024-09-19', temperature: 24.5, ph: 6.2, humidity: 75, installation_id: 1 }
   ]);
 
   // Form state dengan proper typing
@@ -685,7 +685,7 @@ const HydroponicApp: React.FC = () => {
                 onClick={() => {
                   setSelectedInstallation(installation);
                   // setCurrentView('installation-detail');
-                  navigate('/installation/detail', { state: installation })
+                  navigate(`/installation/${installation.id}`, { state: installation })
                 }}
               >
                 <div className="flex items-center gap-4">
