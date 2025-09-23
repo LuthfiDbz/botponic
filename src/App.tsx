@@ -3,7 +3,7 @@ import Home from "./pages/Home/Home";
 import { Navbar } from "./components/Navbar/Navbar";
 import { InstallationDetail } from "./pages/Installation/InstallationsDetail";
 import { Installation } from "./pages/Installation/Installations";
-import { AddEditMeasurement } from "./pages/Installation/AddEditMeasurement";
+import { AddEditInstallationSensor } from "./pages/Installation/AddEditInstallationSensor";
 
 function App() {
   return (
@@ -12,7 +12,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/installations" element={<Installation />} />
         <Route path="/installation/:id" element={<InstallationDetail />} />
-        <Route path="/installation/:id/add-measurement" element={<AddEditMeasurement />} />
+        <Route path="/installation/:id/add-measurement" element={<AddEditInstallationSensor />} />
+        <Route path="/installation/:id/edit-measurement" element={<AddEditInstallationSensor />} />
       </Routes>
       <Navbar />
     </div>

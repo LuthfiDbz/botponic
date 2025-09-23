@@ -1,53 +1,14 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Header } from "../../components/Header/Header"
 import { useState } from "react";
-import { Activity, AlertTriangle, CheckCircle, Droplets, Edit, Eye, Plus, Sprout, Thermometer, Trash2, Wifi, WifiOff, Zap } from "lucide-react";
+import { Sprout} from "lucide-react";
+import type { Installation } from "../../interfaces/installations/installation.interface";
 
-interface StatusCardProps {
-  title: string;
-  value: number;
-  unit: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
-  optimal: string;
-  status: string;
-}
-
-interface Installation {
-  id: string | number;
-  user_id?: string;
-  name: string;
-  type: string;
-  model: 'NFT' | 'DFT';
-  size: string;
-  capacity: number;
-  latest_temperature: number;
-  latest_ph: number;
-  latest_humidity: number;
-  latest_nutrients: number;
-  measurement_date: string;
-  notes?: string;
-  status: 0 | 1 | 2;
-  created_at?: string;
-  updated_at?: string;
-  plant_count: number;
-  image: string;
-  connection_status: 'connected' | 'disconnected';
-}
-
-interface Plant {
-  id: string | number;
-  installation_id: string;
-  name: string;
-  plant_date: string;
-  growth_stage: 'benih' | 'vegetatif' | 'generatif';
-  created_at?: string;
-  updated_at?: string;
-}
 
 export function Installation() {
   const navigate = useNavigate()
 
-  const [installations, setInstallations] = useState<Installation[]>([
+  const [installations, _setInstallations] = useState<Installation[]>([
     {
       id: 1,
       name: 'Instalasi 1',
@@ -55,15 +16,16 @@ export function Installation() {
       model: 'NFT',
       size: '2x1 meter',
       capacity: 20,
-      latest_temperature: 24.5,
-      latest_ph: 6.2,
-      latest_humidity: 75,
-      latest_nutrients: 1200,
-      measurement_date: '2024-09-19',
+      latestTemperature: 24.5,
+      latestPH: 6.2,
+      latestHumidity: 75,
+      latestNutrients: 1200,
+      latestWaterVolume: 80,
+      measurementDate: '2024-09-19',
       status: 2,
-      plant_count: 20,
+      plantCount: 20,
       image: '🥬',
-      connection_status: 'connected'
+      connectionStatus: 'connected'
     },
     {
       id: 2, 
@@ -72,15 +34,16 @@ export function Installation() {
       model: 'DFT',
       size: '1x1 meter',
       capacity: 12,
-      latest_temperature: 23.2,
-      latest_ph: 5.8,
-      latest_humidity: 80,
-      latest_nutrients: 800,
-      measurement_date: '2024-09-18',
+      latestTemperature: 23.2,
+      latestPH: 5.8,
+      latestHumidity: 80,
+      latestNutrients: 800,
+      latestWaterVolume: 90,
+      measurementDate: '2024-09-18',
       status: 1,
-      plant_count: 5,
+      plantCount: 5,
       image: '🌿',
-      connection_status: 'connected'
+      connectionStatus: 'connected'
     },
     {
       id: 3, 
@@ -89,15 +52,16 @@ export function Installation() {
       model: 'DFT',
       size: '1x1 meter',
       capacity: 12,
-      latest_temperature: 23.2,
-      latest_ph: 5.8,
-      latest_humidity: 80,
-      latest_nutrients: 800,
-      measurement_date: '2024-09-18',
+      latestTemperature: 23.2,
+      latestPH: 5.8,
+      latestHumidity: 80,
+      latestNutrients: 800,
+      latestWaterVolume: 40,
+      measurementDate: '2024-09-18',
       status: 0,
-      plant_count: 0,
+      plantCount: 0,
       image: '🌿',
-      connection_status: 'connected'
+      connectionStatus: 'connected'
     }
   ]);
 
@@ -146,18 +110,18 @@ export function Installation() {
                       </div>
                       <div className="flex items-center gap-1 text-sm text-gray-600">
                         <Sprout size={14} className="text-green-600" />
-                        <span>{installation.plant_count}/{installation.capacity}</span>
+                        <span>{installation.plantCount}/{installation.capacity}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-4 mt-3">
-                      {/* <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLatestDataColor(installation.latest_ph, 5.5, 6.5)}`}>
-                        pH: {installation.latest_ph}
+                      {/* <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLatestDataColor(installation.latestPH, 5.5, 6.5)}`}>
+                        pH: {installation.latestPH}
                       </span>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLatestDataColor(installation.latest_temperature, 20, 25)}`}>
-                        {installation.latest_temperature}°C
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLatestDataColor(installation.latestTemperature, 20, 25)}`}>
+                        {installation.latestTemperature}°C
                       </span> */}
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLatestDataColor(installation.latest_temperature, 20, 25)}`}>
-                        {installation.latest_nutrients} PPM
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLatestDataColor(installation.latestTemperature, 20, 25)}`}>
+                        {installation.latestNutrients} PPM
                       </span>
                       <span className={`px-3 py-1 rounded-full text-xs font-medium border me-0 ms-auto ${getStatusColor(installation.status)}`}>
                         {installation?.status == 0 && 'Inactive'}
@@ -165,7 +129,7 @@ export function Installation() {
                         {installation?.status == 2 && 'Full'}
                       </span>
                       {/* <div className="flex items-center gap-1">
-                        {installation.connection_status === 'connected' ? (
+                        {installation.connectionStatus === 'connected' ? (
                           <Wifi size={12} className="text-green-500" />
                         ) : (
                           <WifiOff size={12} className="text-gray-400" />
