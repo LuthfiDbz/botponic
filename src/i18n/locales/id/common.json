@@ -3,8 +3,19 @@
   "home": "Beranda",
 
   "INSTALLATIONS": "",
+  "PLANTING": "",
+  "hole": "Lubang",
+  "daysAfterSeeding": "Hari Setelah Semai",
+  "daysAfterPlanting": "HST",
+  "mustHarvest": "Harus Dipanen",
+  "harvestUpcoming": "Panen Akan Datang",
+  "harvestReady": "Siap Panen",
+  "harvestOverdue": "Panen Terlewat",
+  "growing": "Pertumbuhan",
+
   "MASTERDATA": {
     "PLANTS": ""
   },
-  "MISC": ""
+  "MISC": "",
+  "seeAll": "Lihat Semua"
 }

@@ -1,9 +1,10 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Header } from "../../components/Header/Header"
 import { useState } from "react";
 import { Activity, AlertTriangle, CheckCircle, Edit, Eye, Plus, Sprout, Trash2, Zap } from "lucide-react";
 import type { Planting } from "../../interfaces/planting/planting.interface";
-import { format } from "date-fns";
+import { differenceInDays, format } from "date-fns";
+import { t } from "i18next";
 
 interface StatusCardProps {
   title: string;
@@ -16,6 +17,7 @@ interface StatusCardProps {
 
 
 export function InstallationDetail() {
+  const params = useParams()
   const location = useLocation();
   const navigate = useNavigate()
   const detailData = location.state || {}
@@ -24,8 +26,8 @@ export function InstallationDetail() {
       id: 'plant-1',
       installationId: '1',
       name: 'PL-A1',
-      plantDate: '2024-09-01',
-      harvestDate: '2024-09-30',
+      plantDate: '2025-09-14',
+      harvestDate: '2025-09-29',
       growthStage: 'vegetatif',
       qty: 2,
       plant: {
@@ -48,21 +50,19 @@ export function InstallationDetail() {
         latestHumidity: 75,
         latestNutrients: 1200,
         latestWaterVolume: 80,
-        measurementDate: '2024-09-19',
         status: 2,
         plantCount: 20,
         image: '🥬',
-        connectionStatus: 'connected'
       },
     },
     {
       id: 'plant-2',
       installationId: '1', 
       name: 'PL-A2',
-      plantDate: '2024-09-01',
-      harvestDate: '2024-09-30',
+      plantDate: '2025-08-11',
+      harvestDate: '2025-09-22',
       growthStage: 'vegetatif',
-      qty: 18,
+      qty: 8,
       plant: {
         id: 1,
         name: "Selada Hijau",
@@ -83,48 +83,78 @@ export function InstallationDetail() {
         latestHumidity: 75,
         latestNutrients: 1200,
         latestWaterVolume: 80,
-        measurementDate: '2024-09-19',
         status: 2,
         plantCount: 20,
         image: '🥬',
-        connectionStatus: 'connected'
       },
     },
-    // {
-    //   id: 'plant-3',
-    //   installationId: '2',
-    //   name: 'PL-A3',
-    //   plantDate: '2024-09-05',
-    //   harvestDate: '2024-09-30',
-    //   growthStage: 'benih',
-    //   qty: 5,
-    //   plant: {
-    //     id: 2,
-    //     name: "Selada Merah",
-    //     hss: 2,
-    //     hst: 4,
-    //     ppm: "800-1200",
-    //     pH: "6.5 - 7.5"
-    //   },
-    //   installation: {
-    //     id: 2, 
-    //     name: 'Instalasi 2',
-    //     type: 'Dewasa',
-    //     model: 'DFT',
-    //     size: '1x1 meter',
-    //     capacity: 12,
-    //     latestTemperature: 23.2,
-    //     latestPH: 5.8,
-    //     latestHumidity: 80,
-    //     latestNutrients: 800,
-    //     latestWaterVolume: 90,
-    //     measurementDate: '2024-09-18',
-    //     status: 1,
-    //     plantCount: 5,
-    //     image: '🌿',
-    //     connectionStatus: 'connected'
-    //   },
-    // }
+    {
+      id: 'plant-3',
+      installationId: '2',
+      name: 'PL-A3',
+      plantDate: '2025-08-13',
+      harvestDate: '2025-09-23',
+      growthStage: 'benih',
+      qty: 5,
+      plant: {
+        id: 2,
+        name: "Selada Merah",
+        hss: 2,
+        hst: 4,
+        ppm: "800-1200",
+        pH: "6.5 - 7.5"
+      },
+      installation: {
+        id: 2, 
+        name: 'Instalasi 2',
+        type: 'Dewasa',
+        model: 'DFT',
+        size: '1x1 meter',
+        capacity: 12,
+        latestTemperature: 23.2,
+        latestPH: 5.8,
+        latestHumidity: 80,
+        latestNutrients: 800,
+        latestWaterVolume: 90,
+        status: 1,
+        plantCount: 5,
+        image: '🌿',
+      },
+      
+    },
+    {
+      id: 'plant-4',
+      installationId: '1', 
+      name: 'PL-A4',
+      plantDate: '2025-09-14',
+      harvestDate: '2025-10-14',
+      growthStage: 'vegetatif',
+      qty: 10,
+      plant: {
+        id: 1,
+        name: "Selada Hijau",
+        hss: 2,
+        hst: 4,
+        ppm: "1000-1200",
+        pH: "6.5 - 7.5"
+      },
+      installation: {
+        id: 1,
+        name: 'Instalasi 1',
+        type: 'Dewasa',
+        model: 'NFT',
+        size: '2x1 meter',
+        capacity: 20,
+        latestTemperature: 24.5,
+        latestPH: 6.2,
+        latestHumidity: 75,
+        latestNutrients: 1200,
+        latestWaterVolume: 80,
+        status: 2,
+        plantCount: 20,
+        image: '🥬',
+      },
+    },
   ]);
 
   const StatusCard: React.FC<StatusCardProps> = ({ title, value, unit, icon: Icon, optimal, status }) => {
@@ -164,6 +194,19 @@ export function InstallationDetail() {
     if (value < min * 0.8 || value > max * 1.2) return 'text-red-600 bg-red-50 border-red-200';
     return 'text-yellow-600 bg-yellow-50 border-yellow-200';
   };
+
+  const getHarvestTimelineStatus = (harvestDate: Date | string)  => {
+    const diff = differenceInDays(new Date(), new Date(harvestDate));
+
+    if (diff < 0 && diff > -5) {
+      return <span className={`px-3 py-1 rounded-lg text-xs font-medium border text-yellow-600 bg-yellow-50 border-yellow-200`}>{t('harvestUpcoming').toUpperCase()}</span>;
+    } else if (diff === 0 || diff === 1) {
+      return <span className={`px-3 py-1 rounded-lg text-xs font-medium border text-green-600 bg-green-50 border-green-200`}>{t('harvestReady').toUpperCase()}</span>;
+    } else if (diff >= 2) {
+      return <span className={`px-3 py-1 rounded-lg text-xs font-medium border text-red-600 bg-red-50 border-red-200`}>{t('harvestOverdue').toUpperCase()}</span>;
+    }
+    return <span className={`px-3 py-1 rounded-lg text-xs font-medium border text-blue-600 bg-blue-50 border-blue-200`}>{t('growing').toUpperCase()}</span>;
+  }
 
   return (
     <div className="max-w-md mx-auto bg-gray-50 min-h-screen pb-20">
@@ -229,7 +272,7 @@ export function InstallationDetail() {
               <span className="text-sm font-medium">Input Data</span>
             </button>
             <button 
-              // onClick={() => setCurrentView('measurement-history')}
+              onClick={() => navigate('measurement-sensor-log')}
               className="flex items-center justify-center gap-2 p-4 bg-blue-50 text-blue-600 rounded-2xl border border-blue-200 hover:bg-blue-100 transition-colors"
             >
               <Activity size={16} />
@@ -242,8 +285,8 @@ export function InstallationDetail() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
           <div className="p-4 border-b border-gray-100">
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold text-gray-800">Tanaman ({plantingData.reduce((acc, plant) => acc + plant.qty, 0)}/{detailData.capacity} Lubang Tanam)</h3>
-              {plantingData.reduce((acc, plant) => acc + plant.qty, 0) < detailData.capacity &&
+              <h3 className="font-semibold text-gray-800">Tanaman ({plantingData.filter(dat => dat?.installationId == params?.id).reduce((acc, plant) => acc + plant.qty, 0)}/{detailData.capacity} Lubang Tanam)</h3>
+              {plantingData.filter(dat => dat?.installationId == params?.id).reduce((acc, plant) => acc + plant.qty, 0) < detailData.capacity &&
                 <button 
                   // onClick={() => setCurrentView('add-plant')}
                   className="text-green-600 text-sm font-medium flex items-center gap-1 hover:text-green-700 transition-colors"
@@ -255,25 +298,56 @@ export function InstallationDetail() {
             </div>
           </div>
           <div className="divide-y divide-gray-100">
-            {plantingData?.map(dat => (
+            {plantingData?.map(dat => {
+              if(dat?.installationId == params?.id) {
+                return (
+                  <div key={dat.id} className="p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h1 className=" text-xl font-semibold text-gray-800">{dat?.name}</h1>
+                        <p className="text-sm text-gray-600 mb-2">{dat?.plant?.name} ({dat?.qty} {t('hole')})</p>
+                        <p className="text-sm text-gray-600">{format(dat?.plantDate, 'dd MMM yyyy')} - {format(dat?.harvestDate, 'dd MMM yyyy')}</p>
+                        <p className="text-sm text-gray-600 mb-2">{differenceInDays(new Date(), new Date(dat?.plantDate))} {t('daysAfterPlanting')}</p>
+                        <div>
+                          {getHarvestTimelineStatus(new Date(dat?.harvestDate))}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
+                          <Edit size={24} />
+                        </button>
+                        <button className="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-colors">
+                          <Trash2 size={24} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )
+              }
+            })}
+            {/* {plantingData?.map(dat => (
               <div key={dat.id} className="p-4 hover:bg-gray-50 transition-colors">
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-center">
                   <div>
-                    <h4 className="font-medium text-gray-800">{dat?.name}</h4>
-                    <p className="text-sm text-gray-600">{dat?.plant?.name} ({dat?.qty} Lubang)</p>
+                    <h1 className=" text-xl font-semibold text-gray-800">{dat?.name}</h1>
+                    <p className="text-sm text-gray-600 mb-2">{dat?.plant?.name} ({dat?.qty} {t('hole')})</p>
                     <p className="text-sm text-gray-600">{format(dat?.plantDate, 'dd MMM yyyy')} - {format(dat?.harvestDate, 'dd MMM yyyy')}</p>
+                    <p className="text-sm text-gray-600 mb-2">{differenceInDays(new Date(), new Date(dat?.plantDate))} {t('daysAfterPlanting')}</p>
+                    <div>
+                      {getHarvestTimelineStatus(new Date(dat?.harvestDate))}
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
-                      <Edit size={16} />
+                      <Edit size={24} />
                     </button>
                     <button className="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-colors">
-                      <Trash2 size={16} />
+                      <Trash2 size={24} />
                     </button>
                   </div>
                 </div>
               </div>
-            ))}
+            ))} */}
             {plantingData.length === 0 && (
               <div className="p-8 text-center text-gray-500">
                 <Sprout size={32} className="mx-auto mb-2 opacity-50" />

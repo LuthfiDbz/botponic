@@ -11,23 +11,22 @@ export interface Installation {
   latestHumidity: number;
   latestNutrients: number;
   latestWaterVolume: number,
-  measurementDate: string;
   notes?: string;
   status: 0 | 1 | 2;
   createdAt?: string;
   updatedAt?: string;
   plantCount: number;
   image: string;
-  connectionStatus: 'connected' | 'disconnected';
 }
 
 export interface InstallationSensor {
   id: string | number
-  installationId?: string;
-  installation?: Installation;
+  installationId: string | number;
+  installation: Installation;
   nutrient: number;
   waterVolume: number;
   notes: string;
+  type: "Manual" | "Automatic" | "Triggered"
   createdAt?: string;
   updatedAt?: string;
 }

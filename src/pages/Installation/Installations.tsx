@@ -21,11 +21,9 @@ export function Installation() {
       latestHumidity: 75,
       latestNutrients: 1200,
       latestWaterVolume: 80,
-      measurementDate: '2024-09-19',
       status: 2,
       plantCount: 20,
       image: '🥬',
-      connectionStatus: 'connected'
     },
     {
       id: 2, 
@@ -39,11 +37,9 @@ export function Installation() {
       latestHumidity: 80,
       latestNutrients: 800,
       latestWaterVolume: 90,
-      measurementDate: '2024-09-18',
       status: 1,
       plantCount: 5,
       image: '🌿',
-      connectionStatus: 'connected'
     },
     {
       id: 3, 
@@ -57,11 +53,9 @@ export function Installation() {
       latestHumidity: 80,
       latestNutrients: 800,
       latestWaterVolume: 40,
-      measurementDate: '2024-09-18',
       status: 0,
       plantCount: 0,
       image: '🌿',
-      connectionStatus: 'connected'
     }
   ]);
 
@@ -81,8 +75,8 @@ export function Installation() {
     <div className="max-w-md mx-auto bg-gray-50 min-h-screen pb-20">
       <Header
         title={"INSTALLATIONS"}
-        // showBack={true}
-        // onBack={() => navigate('/')}
+        showBack={true}
+        onBack={() => navigate(-1)}
       />
       <div className="p-4 space-y-6">
         {/* Installation List */}

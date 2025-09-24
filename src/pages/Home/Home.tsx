@@ -2,12 +2,17 @@ import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { 
   Home, Settings, Bell, User, Thermometer, Droplets, Eye, CheckCircle,
-  AlertTriangle, Sprout, Wifi, WifiOff
+  AlertTriangle, Sprout, Wifi, WifiOff,
+  Edit,
+  Trash2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '../../components/Header/Header';
 import type { Installation } from '../../interfaces/installations/installation.interface';
 import { useTranslation } from 'react-i18next';
+import type { Planting } from '../../interfaces/planting/planting.interface';
+import { differenceInDays, differenceInWeeks, format } from 'date-fns';
+import { t } from 'i18next';
 // import { Navbar } from '../../components/Navbar/Navbar';
 
 // TypeScript interface
@@ -60,11 +65,9 @@ const HydroponicApp: React.FC = () => {
       latestHumidity: 75,
       latestNutrients: 1200,
       latestWaterVolume: 80,
-      measurementDate: '2024-09-19',
       status: 2,
       plantCount: 20,
       image: '🥬',
-      connectionStatus: 'connected'
     },
     {
       id: 2, 
@@ -78,13 +81,147 @@ const HydroponicApp: React.FC = () => {
       latestHumidity: 80,
       latestNutrients: 800,
       latestWaterVolume: 90,
-      measurementDate: '2024-09-18',
       status: 1,
       plantCount: 5,
       image: '🌿',
-      connectionStatus: 'connected'
     },
   ]);
+
+  const [plantingData, _setPlantingData] = useState<Planting[]>([
+    {
+      id: 'plant-1',
+      installationId: '1',
+      name: 'PL-A1',
+      plantDate: '2025-09-14',
+      harvestDate: '2025-09-29',
+      growthStage: 'vegetatif',
+      qty: 2,
+      plant: {
+        id: 1,
+        name: "Selada Hijau",
+        hss: 2,
+        hst: 4,
+        ppm: "1000-1200",
+        pH: "6.5 - 7.5"
+      },
+      installation: {
+        id: 1,
+        name: 'Instalasi 1',
+        type: 'Dewasa',
+        model: 'NFT',
+        size: '2x1 meter',
+        capacity: 20,
+        latestTemperature: 24.5,
+        latestPH: 6.2,
+        latestHumidity: 75,
+        latestNutrients: 1200,
+        latestWaterVolume: 80,
+        status: 2,
+        plantCount: 20,
+        image: '🥬',
+      },
+    },
+    {
+      id: 'plant-2',
+      installationId: '1', 
+      name: 'PL-A2',
+      plantDate: '2025-08-11',
+      harvestDate: '2025-09-22',
+      growthStage: 'vegetatif',
+      qty: 18,
+      plant: {
+        id: 1,
+        name: "Selada Hijau",
+        hss: 2,
+        hst: 4,
+        ppm: "1000-1200",
+        pH: "6.5 - 7.5"
+      },
+      installation: {
+        id: 1,
+        name: 'Instalasi 1',
+        type: 'Dewasa',
+        model: 'NFT',
+        size: '2x1 meter',
+        capacity: 20,
+        latestTemperature: 24.5,
+        latestPH: 6.2,
+        latestHumidity: 75,
+        latestNutrients: 1200,
+        latestWaterVolume: 80,
+        status: 2,
+        plantCount: 20,
+        image: '🥬',
+      },
+    },
+    {
+      id: 'plant-3',
+      installationId: '2',
+      name: 'PL-A3',
+      plantDate: '2025-08-13',
+      harvestDate: '2025-09-23',
+      growthStage: 'benih',
+      qty: 5,
+      plant: {
+        id: 2,
+        name: "Selada Merah",
+        hss: 2,
+        hst: 4,
+        ppm: "800-1200",
+        pH: "6.5 - 7.5"
+      },
+      installation: {
+        id: 2, 
+        name: 'Instalasi 2',
+        type: 'Dewasa',
+        model: 'DFT',
+        size: '1x1 meter',
+        capacity: 12,
+        latestTemperature: 23.2,
+        latestPH: 5.8,
+        latestHumidity: 80,
+        latestNutrients: 800,
+        latestWaterVolume: 90,
+        status: 1,
+        plantCount: 5,
+        image: '🌿',
+      },
+      
+    },
+    {
+      id: 'plant-4',
+      installationId: '1', 
+      name: 'PL-A4',
+      plantDate: '2025-09-14',
+      harvestDate: '2025-10-14',
+      growthStage: 'vegetatif',
+      qty: 18,
+      plant: {
+        id: 1,
+        name: "Selada Hijau",
+        hss: 2,
+        hst: 4,
+        ppm: "1000-1200",
+        pH: "6.5 - 7.5"
+      },
+      installation: {
+        id: 1,
+        name: 'Instalasi 1',
+        type: 'Dewasa',
+        model: 'NFT',
+        size: '2x1 meter',
+        capacity: 20,
+        latestTemperature: 24.5,
+        latestPH: 6.2,
+        latestHumidity: 75,
+        latestNutrients: 1200,
+        latestWaterVolume: 80,
+        status: 2,
+        plantCount: 20,
+        image: '🥬',
+      },
+    },
+  ])
 
   const [reminders, _setReminders] = useState<Reminder[]>([
     {
@@ -186,106 +323,6 @@ const HydroponicApp: React.FC = () => {
   //     </div>
   //   );
   // };
-
-  // Add Measurement View (dengan modern form styling)
-  // if (currentView === 'add-measurement' && selectedInstallation) {
-  //   return (
-  //     <div className="max-w-md mx-auto bg-white min-h-screen">
-  //       <Header 
-  //         title="Input Pengukuran Harian"
-  //         showBack={true}
-  //       />
-        
-  //       <div className="p-4 space-y-6">
-  //         <div className="bg-green-50 border border-green-200 rounded-2xl p-4">
-  //           <div className="flex items-center gap-3">
-  //             <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center text-2xl">
-  //               {selectedInstallation.image}
-  //             </div>
-  //             <div>
-  //               <p className="font-medium text-green-800">{selectedInstallation.name}</p>
-  //               <p className="text-sm text-green-600">{selectedInstallation.model}</p>
-  //             </div>
-  //           </div>
-  //         </div>
-
-  //         <div className="space-y-5">
-  //           <div>
-  //             <label className="block text-sm font-semibold mb-3 text-gray-700">Suhu Air (°C) *</label>
-  //             <input
-  //               type="number"
-  //               step="0.1"
-  //               value={measurementForm.temperature}
-  //               onChange={(e) => setMeasurementForm({...measurementForm, temperature: e.target.value})}
-  //               className="w-full p-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50 transition-all"
-  //               placeholder="24.5"
-  //             />
-  //           </div>
-            
-  //           <div>
-  //             <label className="block text-sm font-semibold mb-3 text-gray-700">pH Air *</label>
-  //             <input
-  //               type="number"
-  //               step="0.1"
-  //               value={measurementForm.ph}
-  //               onChange={(e) => setMeasurementForm({...measurementForm, ph: e.target.value})}
-  //               className="w-full p-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50 transition-all"
-  //               placeholder="6.2"
-  //             />
-  //           </div>
-            
-  //           <div>
-  //             <label className="block text-sm font-semibold mb-3 text-gray-700">Kelembaban (%) *</label>
-  //             <input
-  //               type="number"
-  //               value={measurementForm.humidity}
-  //               onChange={(e) => setMeasurementForm({...measurementForm, humidity: e.target.value})}
-  //               className="w-full p-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50 transition-all"
-  //               placeholder="75"
-  //             />
-  //           </div>
-            
-  //           <div>
-  //             <label className="block text-sm font-semibold mb-3 text-gray-700">Nutrisi</label>
-  //             <input
-  //               type="text"
-  //               value={measurementForm.nutrients}
-  //               onChange={(e) => setMeasurementForm({...measurementForm, nutrients: Number(e.target.value)})}
-  //               className="w-full p-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50 transition-all"
-  //               placeholder="AB Mix 1200ppm"
-  //             />
-  //           </div>
-            
-  //           <div>
-  //             <label className="block text-sm font-semibold mb-3 text-gray-700">Catatan</label>
-  //             <textarea
-  //               value={measurementForm.notes}
-  //               onChange={(e) => setMeasurementForm({...measurementForm, notes: e.target.value})}
-  //               className="w-full p-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50 transition-all"
-  //               rows={4}
-  //               placeholder="Observasi tambahan..."
-  //             />
-  //           </div>
-  //         </div>
-          
-  //         <div className="flex gap-4 pt-6">
-  //           <button
-  //             onClick={() => setCurrentView('installation-detail')}
-  //             className="flex-1 p-4 bg-gray-100 text-gray-700 rounded-2xl font-semibold hover:bg-gray-200 transition-colors"
-  //           >
-  //             Batal
-  //           </button>
-  //           <button
-  //             onClick={handleMeasurementSubmit}
-  //             className="flex-1 p-4 bg-green-600 text-white rounded-2xl font-semibold hover:bg-green-700 transition-colors"
-  //           >
-  //             Simpan Data
-  //           </button>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   // Measurement History View  
   // if (currentView === 'measurement-history' && selectedInstallation) {
@@ -395,6 +432,19 @@ const HydroponicApp: React.FC = () => {
   // Default fallback view
   const pendingReminders = getPendingReminders();
   const navigate = useNavigate()
+
+  const getHarvestTimelineStatus = (harvestDate: Date | string)  => {
+    const diff = differenceInDays(new Date(), new Date(harvestDate));
+
+    if (diff < 0 && diff > -5) {
+      return <span className={`px-3 py-1 rounded-lg text-xs font-medium border text-yellow-600 bg-yellow-50 border-yellow-200`}>{t('harvestUpcoming').toUpperCase()}</span>;
+    } else if (diff === 0 || diff === 1) {
+      return <span className={`px-3 py-1 rounded-lg text-xs font-medium border text-green-600 bg-green-50 border-green-200`}>{t('harvestReady').toUpperCase()}</span>;
+    } else if (diff >= 2) {
+      return <span className={`px-3 py-1 rounded-lg text-xs font-medium border text-red-600 bg-red-50 border-red-200`}>{t('harvestOverdue').toUpperCase()}</span>;
+    }
+    return <span className={`px-3 py-1 rounded-lg text-xs font-medium border text-blue-600 bg-blue-50 border-blue-200`}>{t('growing').toUpperCase()}</span>;
+  }
   return (
     <div className="max-w-md mx-auto bg-gray-50 min-h-screen pb-20">
       {/* <Header title="BOTPONIC" /> */}
@@ -469,7 +519,7 @@ const HydroponicApp: React.FC = () => {
                 onClick={() => navigate('/installations')}
                 className="text-green-600 text-sm font-medium hover:text-green-700 transition-colors"
               >
-                Lihat Semua
+                {t('seeAll')}
               </button>
             </div>
           </div>
@@ -506,6 +556,47 @@ const HydroponicApp: React.FC = () => {
                       {/* <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(installation.latestTemperature, 20, 25)}`}>
                         {installation.latestPH}°C
                       </span> */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Planting List */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
+          <div className="p-4 border-b border-gray-100">
+            <div className="flex justify-between items-center">
+              <h3 className="font-semibold text-gray-800">{t('mustHarvest')}</h3>
+              {/* <button 
+                onClick={() => navigate('/plantings')}
+                className="text-green-600 text-sm font-medium hover:text-green-700 transition-colors"
+              >
+                {t('seeAll')}
+              </button> */}
+            </div>
+          </div>
+          <div className="divide-y divide-gray-100">
+            {plantingData?.map(dat => (
+              <div key={dat.id} className="p-4 hover:bg-gray-50 transition-colors">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h4 className=" text-xl font-semibold text-gray-800">{dat?.name} </h4>
+                    <p className="text-lg text-gray-800 mb-2">{dat?.installation?.name}</p>
+                    <p className="text-sm text-gray-600">{dat?.plant?.name}</p>
+                    <p className="text-sm text-gray-600">{dat?.qty} {t('hole')}</p>
+                    
+                    
+                    {/* <>
+                      {getHarvestTimelineStatus(new Date(dat?.harvestDate))}
+                    </> */}
+                  </div>
+                  <div className='flex flex-col items-end gap-1'>
+                    <p className="text-sm text-gray-600">{format(dat?.plantDate, 'dd/MM/yyyy')} - {format(dat?.harvestDate, 'dd/MM/yyyy')}</p>
+                    <p className="text-sm text-gray-600">{differenceInDays(new Date(), new Date(dat?.plantDate))} {t('daysAfterPlanting')}</p>
+                    <div>
+                      {getHarvestTimelineStatus(new Date(dat?.harvestDate))}
                     </div>
                   </div>
                 </div>
