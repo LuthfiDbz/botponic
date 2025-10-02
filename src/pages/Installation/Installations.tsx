@@ -1,14 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { Header } from "../../components/Header/Header"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Sprout} from "lucide-react";
 import type { Installation } from "../../interfaces/installations/installation.interface";
+import { sendGetRequest } from "../../services/requestAdapter";
 
 
 export function Installation() {
   const navigate = useNavigate()
 
-  const [installations, _setInstallations] = useState<Installation[]>([
+  const [installations, setInstallations] = useState<Installation[]>([
     {
       id: 1,
       name: 'Instalasi 1',
@@ -22,7 +23,7 @@ export function Installation() {
       latestNutrients: 1200,
       latestWaterVolume: 80,
       status: 2,
-      plantCount: 20,
+      plantingCount: 20,
       image: '🥬',
     },
     {
@@ -38,7 +39,7 @@ export function Installation() {
       latestNutrients: 800,
       latestWaterVolume: 90,
       status: 1,
-      plantCount: 5,
+      plantingCount: 5,
       image: '🌿',
     },
     {
@@ -54,10 +55,23 @@ export function Installation() {
       latestNutrients: 800,
       latestWaterVolume: 40,
       status: 0,
-      plantCount: 0,
+      plantingCount: 0,
       image: '🌿',
     }
   ]);
+
+  useEffect(() => {
+    getAllInstallations()
+  }, [])
+
+  const getAllInstallations = async () => {
+    try {
+      const { data } = await sendGetRequest('/api/installations')
+      setInstallations(data?.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const getLatestDataColor = (value: number, min: number, max: number): string => {
     if (value >= min && value <= max) return 'text-green-600 bg-green-50 border-green-200';
@@ -93,9 +107,9 @@ export function Installation() {
                 }}
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center text-2xl">
+                  {/* <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center text-2xl">
                     {installation.image}
-                  </div>
+                  </div> */}
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <div>
@@ -104,7 +118,7 @@ export function Installation() {
                       </div>
                       <div className="flex items-center gap-1 text-sm text-gray-600">
                         <Sprout size={14} className="text-green-600" />
-                        <span>{installation.plantCount}/{installation.capacity}</span>
+                        <span>{installation.plantingCount}/{installation.capacity}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-4 mt-3">

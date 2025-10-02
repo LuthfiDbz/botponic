@@ -10,7 +10,8 @@ import type { FormInstallationSensor } from "../../interfaces/installations/inst
 const defaultValues: FormInstallationSensor = {
   nutrient: 0,
   waterVolume: 0,
-  notes: ""
+  notes: "",
+  type: "Manual"
 };
 
 export function AddEditInstallationSensor() {

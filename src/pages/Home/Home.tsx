@@ -66,7 +66,7 @@ const HydroponicApp: React.FC = () => {
       latestNutrients: 1200,
       latestWaterVolume: 80,
       status: 2,
-      plantCount: 20,
+      plantingCount: 20,
       image: '🥬',
     },
     {
@@ -82,7 +82,7 @@ const HydroponicApp: React.FC = () => {
       latestNutrients: 800,
       latestWaterVolume: 90,
       status: 1,
-      plantCount: 5,
+      plantingCount: 5,
       image: '🌿',
     },
   ]);
@@ -91,18 +91,18 @@ const HydroponicApp: React.FC = () => {
     {
       id: 'plant-1',
       installationId: '1',
-      name: 'PL-A1',
-      plantDate: '2025-09-14',
+      plantingNumber: 'PL-A1',
+      plantingDate: '2025-09-14',
       harvestDate: '2025-09-29',
       growthStage: 'vegetatif',
       qty: 2,
       plant: {
         id: 1,
         name: "Selada Hijau",
-        hss: 2,
-        hst: 4,
+        hss: "60-65",
+        hst: "45-50",
         ppm: "1000-1200",
-        pH: "6.5 - 7.5"
+        ph: "6.5 - 7.5"
       },
       installation: {
         id: 1,
@@ -117,25 +117,25 @@ const HydroponicApp: React.FC = () => {
         latestNutrients: 1200,
         latestWaterVolume: 80,
         status: 2,
-        plantCount: 20,
+        plantingCount: 20,
         image: '🥬',
       },
     },
     {
       id: 'plant-2',
       installationId: '1', 
-      name: 'PL-A2',
-      plantDate: '2025-08-11',
+      plantingNumber: 'PL-A2',
+      plantingDate: '2025-08-11',
       harvestDate: '2025-09-22',
       growthStage: 'vegetatif',
       qty: 18,
       plant: {
         id: 1,
         name: "Selada Hijau",
-        hss: 2,
-        hst: 4,
+        hss: "60-65",
+        hst: "45-50",
         ppm: "1000-1200",
-        pH: "6.5 - 7.5"
+        ph: "6.5 - 7.5"
       },
       installation: {
         id: 1,
@@ -150,25 +150,25 @@ const HydroponicApp: React.FC = () => {
         latestNutrients: 1200,
         latestWaterVolume: 80,
         status: 2,
-        plantCount: 20,
+        plantingCount: 20,
         image: '🥬',
       },
     },
     {
       id: 'plant-3',
       installationId: '2',
-      name: 'PL-A3',
-      plantDate: '2025-08-13',
+      plantingNumber: 'PL-A3',
+      plantingDate: '2025-08-13',
       harvestDate: '2025-09-23',
       growthStage: 'benih',
       qty: 5,
       plant: {
         id: 2,
         name: "Selada Merah",
-        hss: 2,
-        hst: 4,
+        hss: "60-65",
+        hst: "45-50",
         ppm: "800-1200",
-        pH: "6.5 - 7.5"
+        ph: "6.5 - 7.5"
       },
       installation: {
         id: 2, 
@@ -183,7 +183,7 @@ const HydroponicApp: React.FC = () => {
         latestNutrients: 800,
         latestWaterVolume: 90,
         status: 1,
-        plantCount: 5,
+        plantingCount: 5,
         image: '🌿',
       },
       
@@ -191,18 +191,18 @@ const HydroponicApp: React.FC = () => {
     {
       id: 'plant-4',
       installationId: '1', 
-      name: 'PL-A4',
-      plantDate: '2025-09-14',
+      plantingNumber: 'PL-A4',
+      plantingDate: '2025-09-14',
       harvestDate: '2025-10-14',
       growthStage: 'vegetatif',
       qty: 18,
       plant: {
         id: 1,
         name: "Selada Hijau",
-        hss: 2,
-        hst: 4,
+        hss: "60-65",
+        hst: "45-50",
         ppm: "1000-1200",
-        pH: "6.5 - 7.5"
+        ph: "6.5 - 7.5"
       },
       installation: {
         id: 1,
@@ -217,7 +217,7 @@ const HydroponicApp: React.FC = () => {
         latestNutrients: 1200,
         latestWaterVolume: 80,
         status: 2,
-        plantCount: 20,
+        plantingCount: 20,
         image: '🥬',
       },
     },
@@ -541,12 +541,12 @@ const HydroponicApp: React.FC = () => {
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h4 className="font-medium text-gray-800">{installation.name}</h4>
+                        <h4 className="font-black text-gray-800">{installation.name}</h4>
                         <p className="text-sm text-gray-600">{installation.model} • {installation.type}</p>
                       </div>
                       <div className="flex items-center gap-1 text-sm text-gray-600">
                         <Sprout size={14} className="text-green-600" />
-                        <span>{installation.plantCount}/{installation.capacity}</span>
+                        <span>{installation.plantingCount}/{installation.capacity}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-4 mt-2">
@@ -582,19 +582,14 @@ const HydroponicApp: React.FC = () => {
               <div key={dat.id} className="p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex justify-between items-center">
                   <div>
-                    <h4 className=" text-xl font-semibold text-gray-800">{dat?.name} </h4>
-                    <p className="text-lg text-gray-800 mb-2">{dat?.installation?.name}</p>
+                    <h4 className=" text-lg font-black text-gray-800">{dat?.plantingNumber} </h4>
+                    <p className="text-md text-gray-800 mb-2">{dat?.installation?.name}</p>
                     <p className="text-sm text-gray-600">{dat?.plant?.name}</p>
                     <p className="text-sm text-gray-600">{dat?.qty} {t('hole')}</p>
-                    
-                    
-                    {/* <>
-                      {getHarvestTimelineStatus(new Date(dat?.harvestDate))}
-                    </> */}
                   </div>
                   <div className='flex flex-col items-end gap-1'>
-                    <p className="text-sm text-gray-600">{format(dat?.plantDate, 'dd/MM/yyyy')} - {format(dat?.harvestDate, 'dd/MM/yyyy')}</p>
-                    <p className="text-sm text-gray-600">{differenceInDays(new Date(), new Date(dat?.plantDate))} {t('daysAfterPlanting')}</p>
+                    <p className="text-sm text-gray-600">{format(dat?.plantingDate, 'dd/MM/yyyy')} - {format(dat?.harvestDate, 'dd/MM/yyyy')}</p>
+                    <p className="text-sm text-gray-600">{differenceInDays(new Date(), new Date(dat?.plantingDate))} {t('daysAfterPlanting')}</p>
                     <div>
                       {getHarvestTimelineStatus(new Date(dat?.harvestDate))}
                     </div>

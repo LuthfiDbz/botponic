@@ -15,7 +15,7 @@ export interface Installation {
   status: 0 | 1 | 2;
   createdAt?: string;
   updatedAt?: string;
-  plantCount: number;
+  plantingCount: number;
   image: string;
 }
 
@@ -36,4 +36,5 @@ export interface FormInstallationSensor {
   nutrient: number;
   waterVolume: number;
   notes: string;
+  type: "Manual" | "Automatic" | "Triggered"
 }

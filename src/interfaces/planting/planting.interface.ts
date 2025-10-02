@@ -7,11 +7,12 @@ export interface Planting {
   installation: Installation;
   plantId?: string;
   plant: Plants;
-  name: string;
-  plantDate: string;
+  plantingNumber: string;
+  plantingDate: string;
   harvestDate: string;
   growthStage: 'benih' | 'vegetatif' | 'generatif';
   qty: number,
+  notes?: string,
   createdAt?: string;
   updatedAt?: string;
 }

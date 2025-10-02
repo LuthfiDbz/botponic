@@ -25,18 +25,18 @@ export function InstallationDetail() {
     {
       id: 'plant-1',
       installationId: '1',
-      name: 'PL-A1',
-      plantDate: '2025-09-14',
+      plantingNumber: 'PL-A1',
+      plantingDate: '2025-09-14',
       harvestDate: '2025-09-29',
       growthStage: 'vegetatif',
       qty: 2,
       plant: {
         id: 1,
         name: "Selada Hijau",
-        hss: 2,
-        hst: 4,
+        hss: "60-65",
+        hst: "45-50",
         ppm: "1000-1200",
-        pH: "6.5 - 7.5"
+        ph: "6.5 - 7.5"
       },
       installation: {
         id: 1,
@@ -51,25 +51,25 @@ export function InstallationDetail() {
         latestNutrients: 1200,
         latestWaterVolume: 80,
         status: 2,
-        plantCount: 20,
+        plantingCount: 20,
         image: '🥬',
       },
     },
     {
       id: 'plant-2',
       installationId: '1', 
-      name: 'PL-A2',
-      plantDate: '2025-08-11',
+      plantingNumber: 'PL-A2',
+      plantingDate: '2025-08-11',
       harvestDate: '2025-09-22',
       growthStage: 'vegetatif',
       qty: 8,
       plant: {
         id: 1,
         name: "Selada Hijau",
-        hss: 2,
-        hst: 4,
+        hss: "60-65",
+        hst: "45-50",
         ppm: "1000-1200",
-        pH: "6.5 - 7.5"
+        ph: "6.5 - 7.5"
       },
       installation: {
         id: 1,
@@ -84,25 +84,25 @@ export function InstallationDetail() {
         latestNutrients: 1200,
         latestWaterVolume: 80,
         status: 2,
-        plantCount: 20,
+        plantingCount: 20,
         image: '🥬',
       },
     },
     {
       id: 'plant-3',
       installationId: '2',
-      name: 'PL-A3',
-      plantDate: '2025-08-13',
+      plantingNumber: 'PL-A3',
+      plantingDate: '2025-08-13',
       harvestDate: '2025-09-23',
       growthStage: 'benih',
       qty: 5,
       plant: {
         id: 2,
         name: "Selada Merah",
-        hss: 2,
-        hst: 4,
+        hss: "60-65",
+        hst: "45-50",
         ppm: "800-1200",
-        pH: "6.5 - 7.5"
+        ph: "6.5 - 7.5"
       },
       installation: {
         id: 2, 
@@ -117,7 +117,7 @@ export function InstallationDetail() {
         latestNutrients: 800,
         latestWaterVolume: 90,
         status: 1,
-        plantCount: 5,
+        plantingCount: 5,
         image: '🌿',
       },
       
@@ -125,18 +125,18 @@ export function InstallationDetail() {
     {
       id: 'plant-4',
       installationId: '1', 
-      name: 'PL-A4',
-      plantDate: '2025-09-14',
+      plantingNumber: 'PL-A4',
+      plantingDate: '2025-09-14',
       harvestDate: '2025-10-14',
       growthStage: 'vegetatif',
       qty: 10,
       plant: {
         id: 1,
         name: "Selada Hijau",
-        hss: 2,
-        hst: 4,
+        hss: "60-65",
+        hst: "45-50",
         ppm: "1000-1200",
-        pH: "6.5 - 7.5"
+        ph: "6.5 - 7.5"
       },
       installation: {
         id: 1,
@@ -151,7 +151,7 @@ export function InstallationDetail() {
         latestNutrients: 1200,
         latestWaterVolume: 80,
         status: 2,
-        plantCount: 20,
+        plantingCount: 20,
         image: '🥬',
       },
     },
@@ -304,21 +304,16 @@ export function InstallationDetail() {
                   <div key={dat.id} className="p-4 hover:bg-gray-50 transition-colors">
                     <div className="flex justify-between items-center">
                       <div>
-                        <h1 className=" text-xl font-semibold text-gray-800">{dat?.name}</h1>
-                        <p className="text-sm text-gray-600 mb-2">{dat?.plant?.name} ({dat?.qty} {t('hole')})</p>
-                        <p className="text-sm text-gray-600">{format(dat?.plantDate, 'dd MMM yyyy')} - {format(dat?.harvestDate, 'dd MMM yyyy')}</p>
-                        <p className="text-sm text-gray-600 mb-2">{differenceInDays(new Date(), new Date(dat?.plantDate))} {t('daysAfterPlanting')}</p>
+                        <h4 className="text-lg font-bold text-gray-800">{dat?.plantingNumber} </h4>
+                        <p className="text-sm text-gray-600">{dat?.plant?.name}</p>
+                        <p className="text-sm text-gray-600">{dat?.qty} {t('hole')}</p>
+                      </div>
+                      <div className='flex flex-col items-end gap-1'>
+                        <p className="text-sm text-gray-600">{format(dat?.plantingDate, 'dd/MM/yyyy')} - {format(dat?.harvestDate, 'dd/MM/yyyy')}</p>
+                        <p className="text-sm text-gray-600">{differenceInDays(new Date(), new Date(dat?.plantingDate))} {t('daysAfterPlanting')}</p>
                         <div>
                           {getHarvestTimelineStatus(new Date(dat?.harvestDate))}
                         </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
-                          <Edit size={24} />
-                        </button>
-                        <button className="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-colors">
-                          <Trash2 size={24} />
-                        </button>
                       </div>
                     </div>
                   </div>
@@ -331,8 +326,8 @@ export function InstallationDetail() {
                   <div>
                     <h1 className=" text-xl font-semibold text-gray-800">{dat?.name}</h1>
                     <p className="text-sm text-gray-600 mb-2">{dat?.plant?.name} ({dat?.qty} {t('hole')})</p>
-                    <p className="text-sm text-gray-600">{format(dat?.plantDate, 'dd MMM yyyy')} - {format(dat?.harvestDate, 'dd MMM yyyy')}</p>
-                    <p className="text-sm text-gray-600 mb-2">{differenceInDays(new Date(), new Date(dat?.plantDate))} {t('daysAfterPlanting')}</p>
+                    <p className="text-sm text-gray-600">{format(dat?.plantingDate, 'dd MMM yyyy')} - {format(dat?.harvestDate, 'dd MMM yyyy')}</p>
+                    <p className="text-sm text-gray-600 mb-2">{differenceInDays(new Date(), new Date(dat?.plantingDate))} {t('daysAfterPlanting')}</p>
                     <div>
                       {getHarvestTimelineStatus(new Date(dat?.harvestDate))}
                     </div>

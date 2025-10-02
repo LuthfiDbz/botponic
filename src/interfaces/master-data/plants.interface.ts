@@ -1,8 +1,8 @@
 export interface Plants {
   id: string | number,
   name: string,
-  hss: number,
-  hst: number,
+  hss: string,
+  hst: string,
   ppm: string,
-  pH: string
+  ph: string
 }
