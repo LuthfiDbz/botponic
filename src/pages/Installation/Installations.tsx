@@ -8,7 +8,6 @@ import { sendGetRequest } from "../../services/requestAdapter";
 
 export function Installation() {
   const navigate = useNavigate()
-
   const [installations, setInstallations] = useState<Installation[]>([
     {
       id: 1,
@@ -59,17 +58,21 @@ export function Installation() {
       image: '🌿',
     }
   ]);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     getAllInstallations()
   }, [])
 
   const getAllInstallations = async () => {
+    setLoading(true)
     try {
       const { data } = await sendGetRequest('/api/installations')
       setInstallations(data?.data)
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -92,65 +95,72 @@ export function Installation() {
         showBack={true}
         onBack={() => navigate(-1)}
       />
-      <div className="p-4 space-y-6">
         {/* Installation List */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
-          <div className="divide-y divide-gray-100">
-            {installations.map(installation => (
-              <div 
-                key={installation.id}
-                className="p-4 hover:bg-gray-50 cursor-pointer transition-colors"
-                onClick={() => {
-                  // setSelectedInstallation(installation);
-                  // setCurrentView('installation-detail');
-                  navigate(`/installation/${installation.id}`, { state: installation })
-                }}
-              >
-                <div className="flex items-center gap-4">
-                  {/* <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center text-2xl">
-                    {installation.image}
-                  </div> */}
-                  <div className="flex-1">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-medium text-gray-800">{installation.name}</h4>
-                        <p className="text-sm text-gray-600">{installation.model} • {installation.type}</p>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm text-gray-600">
-                        <Sprout size={14} className="text-green-600" />
-                        <span>{installation.plantingCount}/{installation.capacity}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4 mt-3">
-                      {/* <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLatestDataColor(installation.latestPH, 5.5, 6.5)}`}>
-                        pH: {installation.latestPH}
-                      </span>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLatestDataColor(installation.latestTemperature, 20, 25)}`}>
-                        {installation.latestTemperature}°C
-                      </span> */}
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLatestDataColor(installation.latestTemperature, 20, 25)}`}>
-                        {installation.latestNutrients} PPM
-                      </span>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium border me-0 ms-auto ${getStatusColor(installation.status)}`}>
-                        {installation?.status == 0 && 'Inactive'}
-                        {installation?.status == 1 && 'Active'}
-                        {installation?.status == 2 && 'Full'}
-                      </span>
-                      {/* <div className="flex items-center gap-1">
-                        {installation.connectionStatus === 'connected' ? (
-                          <Wifi size={12} className="text-green-500" />
-                        ) : (
-                          <WifiOff size={12} className="text-gray-400" />
-                        )}
-                      </div> */}
+          
+        <div className="p-4 space-y-6">
+            {loading ? 
+              <div className="p-4 text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto"></div>
+              </div>
+              :
+              <>
+              {installations.map(installation => (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+                        <div 
+                          key={installation.id}
+                          className="p-4 hover:bg-gray-50 cursor-pointer transition-colors"
+                          onClick={() => {
+                            // setSelectedInstallation(installation);
+                            // setCurrentView('installation-detail');
+                            navigate(`/installation/${installation.id}`, { state: installation })
+                          }}
+                        >
+                          <div className="flex items-center gap-4">
+                            {/* <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center text-2xl">
+                              {installation.image}
+                            </div> */}
+                            <div className="flex-1">
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <h4 className="font-medium text-gray-800">{installation.name}</h4>
+                                  <p className="text-sm text-gray-600">{installation.model} • {installation.type}</p>
+                                </div>
+                                <div className="flex items-center gap-1 text-sm text-gray-600">
+                                  <Sprout size={14} className="text-green-600" />
+                                  <span>{installation.plantingCount}/{installation.capacity}</span>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-4 mt-3">
+                                {/* <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLatestDataColor(installation.latestPH, 5.5, 6.5)}`}>
+                                  pH: {installation.latestPH}
+                                </span>
+                                <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLatestDataColor(installation.latestTemperature, 20, 25)}`}>
+                                  {installation.latestTemperature}°C
+                                </span> */}
+                                <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLatestDataColor(installation.latestTemperature, 20, 25)}`}>
+                                  {installation.latestNutrients} PPM
+                                </span>
+                                <span className={`px-3 py-1 rounded-full text-xs font-medium border me-0 ms-auto ${getStatusColor(installation.status)}`}>
+                                  {installation?.status == 0 && 'Inactive'}
+                                  {installation?.status == 1 && 'Active'}
+                                  {installation?.status == 2 && 'Full'}
+                                </span>
+                                {/* <div className="flex items-center gap-1">
+                                  {installation.connectionStatus === 'connected' ? (
+                                    <Wifi size={12} className="text-green-500" />
+                                  ) : (
+                                    <WifiOff size={12} className="text-gray-400" />
+                                  )}
+                                </div> */}
+                              </div>
+                            </div>
+                          </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+                      ))}
+              </>
+            }
+            </div>
     </div>
   )
 }

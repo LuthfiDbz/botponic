@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { Header } from "../../components/Header/Header"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Sprout} from "lucide-react";
 import type { Installation, InstallationSensor } from "../../interfaces/installations/installation.interface";
+import { sendGetRequest } from "../../services/requestAdapter";
 
 
 export function InstallationSensorLog() {
@@ -58,6 +59,24 @@ export function InstallationSensorLog() {
       type: "Automatic"
     },
   ])
+
+  const [loading, setLoading] = useState(false)
+  
+  useEffect(() => {
+    // getAllMeasurementLog()
+  }, [])
+
+  const getAllMeasurementLog = async () => {
+    setLoading(true)
+    try {
+      const { data } = await sendGetRequest('/api/installations')
+      setLogData(data?.data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const getLatestDataColor = (value: number, min: number, max: number): string => {
     if (value >= min && value <= max) return 'text-green-600 bg-green-50 border-green-200';
