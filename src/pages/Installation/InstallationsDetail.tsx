@@ -1,10 +1,12 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Header } from "../../components/Header/Header"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Activity, AlertTriangle, CheckCircle, Edit, Eye, Plus, Sprout, Trash2, Zap } from "lucide-react";
 import type { Planting } from "../../interfaces/planting/planting.interface";
 import { differenceInDays, format } from "date-fns";
 import { t } from "i18next";
+import type { Installation } from "../../interfaces/installations/installation.interface";
+import { sendGetRequest } from "../../services/requestAdapter";
 
 interface StatusCardProps {
   title: string;
@@ -21,6 +23,7 @@ export function InstallationDetail() {
   const location = useLocation();
   const navigate = useNavigate()
   const detailData = location.state || {}
+  const [installationDetailData, setInstallationDetailData] = useState<Installation>()
   const [plantingData, _setPlantingData] = useState<Planting[]>([
     {
       id: 'plant-1',
@@ -157,6 +160,25 @@ export function InstallationDetail() {
     },
   ]);
 
+  const [loading, setLoading] = useState(false)
+  
+  useEffect(() => {
+    getInstallationsDetail()
+  }, [])
+
+  const getInstallationsDetail = async () => {
+    setLoading(true)
+    try {
+      const { data } = await sendGetRequest(`/api/installations/${params?.id}`)
+      console.log(data?.data)
+      setInstallationDetailData(data?.data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const StatusCard: React.FC<StatusCardProps> = ({ title, value, unit, icon: Icon, optimal, status }) => {
     const statusColors: Record<string, string> = {
       good: 'bg-green-100 border-green-300 text-green-800',
@@ -242,7 +264,7 @@ export function InstallationDetail() {
         <div className="grid grid-cols-2 gap-4">
           <StatusCard
             title="Volume Air"
-            value={detailData.latestWaterVolume}
+            value={installationDetailData?.latestWaterVolume!}
             unit="%"
             icon={Eye}
             optimal="70-85%"
@@ -251,7 +273,7 @@ export function InstallationDetail() {
           />
           <StatusCard
             title="Volume Air"
-            value={detailData.latestNutrients}
+            value={installationDetailData?.latestNutrients!}
             unit=" PPM"
             icon={Zap}
             optimal="800-1300"
@@ -285,8 +307,8 @@ export function InstallationDetail() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
           <div className="p-4 border-b border-gray-100">
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold text-gray-800">Tanaman ({plantingData.filter(dat => dat?.installationId == params?.id).reduce((acc, plant) => acc + plant.qty, 0)}/{detailData.capacity} Lubang Tanam)</h3>
-              {plantingData.filter(dat => dat?.installationId == params?.id).reduce((acc, plant) => acc + plant.qty, 0) < detailData.capacity &&
+              <h3 className="font-semibold text-gray-800">Tanaman ({installationDetailData?.plantingCount}/{installationDetailData?.capacity} Lubang Tanam)</h3>
+              {installationDetailData?.plantingCount! < installationDetailData?.capacity! &&
                 <button 
                   // onClick={() => setCurrentView('add-plant')}
                   className="text-green-600 text-sm font-medium flex items-center gap-1 hover:text-green-700 transition-colors"
@@ -298,27 +320,25 @@ export function InstallationDetail() {
             </div>
           </div>
           <div className="divide-y divide-gray-100">
-            {plantingData?.map(dat => {
-              if(dat?.installationId == params?.id) {
-                return (
-                  <div key={dat.id} className="p-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex justify-between items-center">
+            {installationDetailData?.plantings?.map(dat => { 
+              return (
+                <div key={dat.id} className="p-4 hover:bg-gray-50 transition-colors">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h4 className="text-lg font-bold text-gray-800">{dat?.plantingNumber} </h4>
+                      <p className="text-sm text-gray-600">{dat?.plant?.name}</p>
+                      <p className="text-sm text-gray-600">{dat?.qty} {t('hole')}</p>
+                    </div>
+                    <div className='flex flex-col items-end gap-1'>
+                      <p className="text-sm text-gray-600">{format(dat?.plantingDate, 'dd/MM/yyyy')} - {format(dat?.harvestDate, 'dd/MM/yyyy')}</p>
+                      <p className="text-sm text-gray-600">{differenceInDays(new Date(), new Date(dat?.plantingDate))} {t('daysAfterPlanting')}</p>
                       <div>
-                        <h4 className="text-lg font-bold text-gray-800">{dat?.plantingNumber} </h4>
-                        <p className="text-sm text-gray-600">{dat?.plant?.name}</p>
-                        <p className="text-sm text-gray-600">{dat?.qty} {t('hole')}</p>
-                      </div>
-                      <div className='flex flex-col items-end gap-1'>
-                        <p className="text-sm text-gray-600">{format(dat?.plantingDate, 'dd/MM/yyyy')} - {format(dat?.harvestDate, 'dd/MM/yyyy')}</p>
-                        <p className="text-sm text-gray-600">{differenceInDays(new Date(), new Date(dat?.plantingDate))} {t('daysAfterPlanting')}</p>
-                        <div>
-                          {getHarvestTimelineStatus(new Date(dat?.harvestDate))}
-                        </div>
+                        {getHarvestTimelineStatus(new Date(dat?.harvestDate))}
                       </div>
                     </div>
                   </div>
-                )
-              }
+                </div>
+              )
             })}
             {/* {plantingData?.map(dat => (
               <div key={dat.id} className="p-4 hover:bg-gray-50 transition-colors">

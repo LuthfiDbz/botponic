@@ -1,3 +1,5 @@
+import type { Planting } from "../planting/planting.interface";
+
 export interface Installation {
   id: string | number;
   userId?: string;
@@ -17,6 +19,7 @@ export interface Installation {
   updatedAt?: string;
   plantingCount: number;
   image: string;
+  plantings?: Planting[]
 }
 
 export interface InstallationSensor {
