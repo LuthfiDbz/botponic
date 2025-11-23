@@ -1,6 +1,7 @@
 {
   "NAVBAR": "",
-  "home": "Home",
+  "menuHome": "Home",
+  "menuInstallations": "Instalasi",
 
   "INSTALLATIONS": "",
   "MASTERDATA": {

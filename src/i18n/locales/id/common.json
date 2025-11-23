@@ -1,9 +1,20 @@
 {
   "NAVBAR": "",
-  "home": "Beranda",
+  "menuHome": "Beranda",
+  "menuInstallations": "Instalasi",
+  "menuPlantings": "Penanaman",
+  "menuMeasurementLog": "Pengukuran",
+
+  "DASHBOARD": "",
+  "installationTotal": "Instalasi Aktif",
+  "plantingTotal": "Penanaman Aktif",
+  "needHarvest": "Siap Panen",
+
 
   "INSTALLATIONS": "",
+
   "PLANTING": "",
+  "plantings" : "Penanaman",
   "hole": "Lubang",
   "daysAfterSeeding": "Hari Setelah Semai",
   "daysAfterPlanting": "HST",
@@ -13,8 +24,11 @@
   "harvestOverdue": "Panen Terlewat",
   "growing": "Pertumbuhan",
 
+  "MEASUREMENTLOG": "",
+  "measurementLog": "Pengukuran",
+
   "MASTERDATA": {
-    "PLANTS": ""
+    "PLANTS": "Tanaman"
   },
   "MISC": "",
   "seeAll": "Lihat Semua"

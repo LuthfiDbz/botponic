@@ -4,5 +4,6 @@ export interface Plants {
   hss: string,
   hst: string,
   ppm: string,
-  ph: string
+  ph: string,
+  imageUrl: string
 }

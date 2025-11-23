@@ -22,7 +22,7 @@ export interface Installation {
   plantings?: Planting[]
 }
 
-export interface InstallationSensor {
+export interface InstallationMeasurement {
   id: string | number
   installationId: string | number;
   installation: Installation;
@@ -34,8 +34,9 @@ export interface InstallationSensor {
   updatedAt?: string;
 }
 
-export interface FormInstallationSensor {
-  id?: string | number
+export interface FormInstallationMeasurement {
+  id?: string | number;
+  installationId: string | number;
   nutrient: number;
   waterVolume: number;
   notes: string;

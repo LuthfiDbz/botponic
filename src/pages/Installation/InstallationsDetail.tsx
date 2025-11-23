@@ -1,12 +1,17 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import { Header } from "../../components/Header/Header"
 import { useEffect, useState } from "react";
-import { Activity, AlertTriangle, CheckCircle, Edit, Eye, Plus, Sprout, Trash2, Zap } from "lucide-react";
-import type { Planting } from "../../interfaces/planting/planting.interface";
+import {  AlertTriangle, CheckCircle,  Eye, Plus, Sprout, Zap } from "lucide-react";
+// import type { Planting } from "../../interfaces/planting/planting.interface";
 import { differenceInDays, format } from "date-fns";
 import { t } from "i18next";
 import type { Installation } from "../../interfaces/installations/installation.interface";
 import { sendGetRequest } from "../../services/requestAdapter";
+import { Loading } from "../../components/Loading";
+import { Button } from "../../components/Button/Button";
+import type { Planting } from "../../interfaces/planting/planting.interface";
+import type { MeasurementLog } from "../../interfaces/measurement-logs/measurement.interface";
+import { EmptyData } from "../../components/EmptyData";
 
 interface StatusCardProps {
   title: string;
@@ -20,160 +25,50 @@ interface StatusCardProps {
 
 export function InstallationDetail() {
   const params = useParams()
-  const location = useLocation();
   const navigate = useNavigate()
-  const detailData = location.state || {}
   const [installationDetailData, setInstallationDetailData] = useState<Installation>()
-  const [plantingData, _setPlantingData] = useState<Planting[]>([
-    {
-      id: 'plant-1',
-      installationId: '1',
-      plantingNumber: 'PL-A1',
-      plantingDate: '2025-09-14',
-      harvestDate: '2025-09-29',
-      growthStage: 'vegetatif',
-      qty: 2,
-      plant: {
-        id: 1,
-        name: "Selada Hijau",
-        hss: "60-65",
-        hst: "45-50",
-        ppm: "1000-1200",
-        ph: "6.5 - 7.5"
-      },
-      installation: {
-        id: 1,
-        name: 'Instalasi 1',
-        type: 'Dewasa',
-        model: 'NFT',
-        size: '2x1 meter',
-        capacity: 20,
-        latestTemperature: 24.5,
-        latestPH: 6.2,
-        latestHumidity: 75,
-        latestNutrients: 1200,
-        latestWaterVolume: 80,
-        status: 2,
-        plantingCount: 20,
-        image: '🥬',
-      },
-    },
-    {
-      id: 'plant-2',
-      installationId: '1', 
-      plantingNumber: 'PL-A2',
-      plantingDate: '2025-08-11',
-      harvestDate: '2025-09-22',
-      growthStage: 'vegetatif',
-      qty: 8,
-      plant: {
-        id: 1,
-        name: "Selada Hijau",
-        hss: "60-65",
-        hst: "45-50",
-        ppm: "1000-1200",
-        ph: "6.5 - 7.5"
-      },
-      installation: {
-        id: 1,
-        name: 'Instalasi 1',
-        type: 'Dewasa',
-        model: 'NFT',
-        size: '2x1 meter',
-        capacity: 20,
-        latestTemperature: 24.5,
-        latestPH: 6.2,
-        latestHumidity: 75,
-        latestNutrients: 1200,
-        latestWaterVolume: 80,
-        status: 2,
-        plantingCount: 20,
-        image: '🥬',
-      },
-    },
-    {
-      id: 'plant-3',
-      installationId: '2',
-      plantingNumber: 'PL-A3',
-      plantingDate: '2025-08-13',
-      harvestDate: '2025-09-23',
-      growthStage: 'benih',
-      qty: 5,
-      plant: {
-        id: 2,
-        name: "Selada Merah",
-        hss: "60-65",
-        hst: "45-50",
-        ppm: "800-1200",
-        ph: "6.5 - 7.5"
-      },
-      installation: {
-        id: 2, 
-        name: 'Instalasi 2',
-        type: 'Dewasa',
-        model: 'DFT',
-        size: '1x1 meter',
-        capacity: 12,
-        latestTemperature: 23.2,
-        latestPH: 5.8,
-        latestHumidity: 80,
-        latestNutrients: 800,
-        latestWaterVolume: 90,
-        status: 1,
-        plantingCount: 5,
-        image: '🌿',
-      },
-      
-    },
-    {
-      id: 'plant-4',
-      installationId: '1', 
-      plantingNumber: 'PL-A4',
-      plantingDate: '2025-09-14',
-      harvestDate: '2025-10-14',
-      growthStage: 'vegetatif',
-      qty: 10,
-      plant: {
-        id: 1,
-        name: "Selada Hijau",
-        hss: "60-65",
-        hst: "45-50",
-        ppm: "1000-1200",
-        ph: "6.5 - 7.5"
-      },
-      installation: {
-        id: 1,
-        name: 'Instalasi 1',
-        type: 'Dewasa',
-        model: 'NFT',
-        size: '2x1 meter',
-        capacity: 20,
-        latestTemperature: 24.5,
-        latestPH: 6.2,
-        latestHumidity: 75,
-        latestNutrients: 1200,
-        latestWaterVolume: 80,
-        status: 2,
-        plantingCount: 20,
-        image: '🥬',
-      },
-    },
-  ]);
+  const [plantingData, setPlantingData] = useState<Planting[]>([])
+  const [measurementData, setMeasurementData] = useState<MeasurementLog[]>([])
 
   const [loading, setLoading] = useState(false)
   
   useEffect(() => {
     getInstallationsDetail()
+    getAllPlanting()
+    getAllMeasurementLog()
   }, [])
 
   const getInstallationsDetail = async () => {
     setLoading(true)
     try {
       const { data } = await sendGetRequest(`/api/installations/${params?.id}`)
-      console.log(data?.data)
       setInstallationDetailData(data?.data)
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getAllPlanting = async () => {
+    setLoading(true)
+    try {
+      const { data } = await sendGetRequest(`/api/plantings?installationId=${params?.id}&limit=5`);
+      setPlantingData(data?.data)
+    } catch (error) {
+      console.error("Gagal memuat data penanaman:", error);
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getAllMeasurementLog = async () => {
+    setLoading(true)
+    try {
+      const { data } = await sendGetRequest(`/api/measurement-logs?installationId=${params?.id}&limit=5`);
+      setMeasurementData(data?.data)
+    } catch (error) {
+      console.error("Gagal memuat data pengukuran:", error);
     } finally {
       setLoading(false)
     }
@@ -230,146 +125,140 @@ export function InstallationDetail() {
     return <span className={`px-3 py-1 rounded-lg text-xs font-medium border text-blue-600 bg-blue-50 border-blue-200`}>{t('growing').toUpperCase()}</span>;
   }
 
+  const PlantingList = () => {
+    if (loading) return <Loading />;
+    if (!loading && plantingData?.length == 0) return <EmptyData />;
+
+    return (
+      <div className="divide-y divide-gray-100 flex flex-col items-end">
+        {plantingData?.map(dat => { 
+          return (
+            <div key={dat.id} className="p-4 hover:bg-gray-50 transition-colors w-full">
+              <div className="flex gap-4 items-center">
+                <img src={dat?.plant?.imageUrl} alt="gambar" width={100} height={100}/>
+                <div>
+                  <h4 className="text-lg font-bold text-gray-800">{dat?.plantingNumber} </h4>
+                  <p className="text-sm text-gray-600">{dat?.plant?.name} ({dat?.qty} {t('hole')})</p>
+                  <p className="text-sm text-gray-600">{format(dat?.plantingDate, 'dd MMM yyyy')} - {format(dat?.harvestDate, 'dd MMM yyyy')}</p>
+                  <p className="text-sm text-gray-600">{differenceInDays(new Date(), new Date(dat?.plantingDate))} {t('daysAfterPlanting')}</p>
+                  <div className="mt-3">
+                    {getHarvestTimelineStatus(new Date(dat?.harvestDate))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+
+        <Button
+          variant="link" 
+          size="s"
+          onClick={() => navigate(`/plantings?installation=${params?.id}`)}
+          className='p-0 my-2 w-fit'
+        >{t('seeAll')} →</Button>
+      </div>
+    );
+  }
+
+   const MeasurementList = () => {
+    if (loading) return <Loading />;
+    if (!loading && plantingData?.length == 0) return <EmptyData />;
+
+    return (
+      <div className="divide-y divide-gray-100 flex flex-col items-end ">
+        {measurementData?.map(dat => { 
+          return (
+            <div key={dat.id} className="p-4 hover:bg-gray-50 transition-colors w-full">
+              <div className="flex justify-between items-center">
+                <div >
+                  <p className="text-sm text-gray-600">{dat?.createdAt ? format(new Date(dat.createdAt), 'dd MMM yyyy') : '-'}</p>
+                  <p className="text-sm text-gray-600">{dat?.createdAt ? format(new Date(dat.createdAt), 'HH:mm') : '-'}</p>
+                </div>
+                <div className='flex flex-col items-end gap-1'>
+                  <h4 className="text-sm text-gray-800">{dat?.nutrient} PPM</h4>
+                  <p className="text-sm text-gray-600">{dat?.waterVolume}%</p>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+
+        <Button
+          variant="link" 
+          size="s"
+          onClick={() => navigate(`/plantings?installation=${params?.id}`)}
+          className='p-0 my-2 w-fit'
+        >{t('seeAll')} →</Button>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-md mx-auto bg-gray-50 min-h-screen pb-20">
       <Header
-        title={detailData.name}
+        title={installationDetailData?.name || ""}
         showBack={true}
         onBack={() => navigate(-1)}
       />
       
       <div className="p-4 space-y-6">
-        {/* Modern Status Cards */}
-        {/* <div className="grid grid-cols-2 gap-4">
-          <StatusCard
-            title="pH"
-            value={detailData.latestPH}
-            unit=""
-            icon={Droplets}
-            optimal="5.5-6.5"
-            status={getStatusColor(detailData.latestPH, 5.5, 6.5).includes('green') ? 'good' : 
-                    getStatusColor(detailData.latestPH, 5.5, 6.5).includes('red') ? 'critical' : 'warning'}
-          />
-          <StatusCard
-            title="Suhu"
-            value={detailData.latestTemperature}
-            unit="°C"
-            icon={Thermometer}
-            optimal="20-25°C"
-            status={getStatusColor(detailData.latestTemperature, 20, 25).includes('green') ? 'good' : 
-                    getStatusColor(detailData.latestTemperature, 20, 25).includes('red') ? 'critical' : 'warning'}
-          />
-        </div> */}
 
         <div className="grid grid-cols-2 gap-4">
           <StatusCard
             title="Volume Air"
-            value={installationDetailData?.latestWaterVolume!}
+            value={installationDetailData?.latestWaterVolume || 0}
             unit="%"
             icon={Eye}
-            optimal="70-85%"
-            status={getStatusColor(detailData.latestWaterVolume, 70, 85).includes('green') ? 'good' : 
-                    getStatusColor(detailData.latestWaterVolume, 70, 85).includes('red') ? 'critical' : 'warning'}
+            optimal="80-90%"
+            status={getStatusColor(installationDetailData?.latestWaterVolume!, 80, 90).includes('green') ? 'good' : 
+                    getStatusColor(installationDetailData?.latestWaterVolume!, 80, 90).includes('red') ? 'critical' : 'warning'}
           />
           <StatusCard
-            title="Volume Air"
-            value={installationDetailData?.latestNutrients!}
+            title="Nutrisi"
+            value={installationDetailData?.latestNutrients || 0}
             unit=" PPM"
             icon={Zap}
-            optimal="800-1300"
-            status={getStatusColor(detailData.latestNutrients, 70, 85).includes('green') ? 'good' : 
-                    getStatusColor(detailData.latestNutrients, 70, 85).includes('red') ? 'critical' : 'warning'}
+            optimal="1200-1300"
+            status={getStatusColor(installationDetailData?.latestNutrients!, 1200, 1300).includes('green') ? 'good' : 
+                    getStatusColor(installationDetailData?.latestNutrients!, 1200, 1300).includes('red') ? 'critical' : 'warning'}
           />
         </div>
 
-        {/* Quick Actions */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-          <h3 className="font-semibold mb-4 text-gray-800">Aksi Cepat</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <button 
-              onClick={() => navigate('add-measurement')}
-              className="flex items-center justify-center gap-2 p-4 bg-green-600 text-white rounded-2xl shadow-sm hover:bg-green-700 transition-colors"
-            >
-              <Plus size={16} />
-              <span className="text-sm font-medium">Input Data</span>
-            </button>
-            <button 
-              onClick={() => navigate('measurement-sensor-log')}
-              className="flex items-center justify-center gap-2 p-4 bg-blue-50 text-blue-600 rounded-2xl border border-blue-200 hover:bg-blue-100 transition-colors"
-            >
-              <Activity size={16} />
-              <span className="text-sm font-medium">Lihat Riwayat</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Plants in this Installation */}
+        {/* Plantings in this Installation */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
           <div className="p-4 border-b border-gray-100">
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold text-gray-800">Tanaman ({installationDetailData?.plantingCount}/{installationDetailData?.capacity} Lubang Tanam)</h3>
+              <div className="space-y-2">
+                <h3 className="font-semibold text-gray-800">{t('plantings')}</h3>
+                <h4 className="w-fit px-3 py-1 bg-green-600 text-white rounded-full text-xs font-semibold">{installationDetailData?.plantingCount ?? 0}/{installationDetailData?.capacity ?? 0} Lubang</h4>
+              </div>
               {installationDetailData?.plantingCount! < installationDetailData?.capacity! &&
-                <button 
-                  // onClick={() => setCurrentView('add-plant')}
-                  className="text-green-600 text-sm font-medium flex items-center gap-1 hover:text-green-700 transition-colors"
-                >
-                  <Plus size={14} />
-                  Tambah
-                </button>
+                <Button 
+                  variant="primary" 
+                  size="s" 
+                  icon={<Plus size={14} />}
+                  onClick={() => navigate(`/add-planting?id=${params?.id}`)}
+                >Tambah</Button>
               }
             </div>
           </div>
-          <div className="divide-y divide-gray-100">
-            {installationDetailData?.plantings?.map(dat => { 
-              return (
-                <div key={dat.id} className="p-4 hover:bg-gray-50 transition-colors">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h4 className="text-lg font-bold text-gray-800">{dat?.plantingNumber} </h4>
-                      <p className="text-sm text-gray-600">{dat?.plant?.name}</p>
-                      <p className="text-sm text-gray-600">{dat?.qty} {t('hole')}</p>
-                    </div>
-                    <div className='flex flex-col items-end gap-1'>
-                      <p className="text-sm text-gray-600">{format(dat?.plantingDate, 'dd/MM/yyyy')} - {format(dat?.harvestDate, 'dd/MM/yyyy')}</p>
-                      <p className="text-sm text-gray-600">{differenceInDays(new Date(), new Date(dat?.plantingDate))} {t('daysAfterPlanting')}</p>
-                      <div>
-                        {getHarvestTimelineStatus(new Date(dat?.harvestDate))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-            {/* {plantingData?.map(dat => (
-              <div key={dat.id} className="p-4 hover:bg-gray-50 transition-colors">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h1 className=" text-xl font-semibold text-gray-800">{dat?.name}</h1>
-                    <p className="text-sm text-gray-600 mb-2">{dat?.plant?.name} ({dat?.qty} {t('hole')})</p>
-                    <p className="text-sm text-gray-600">{format(dat?.plantingDate, 'dd MMM yyyy')} - {format(dat?.harvestDate, 'dd MMM yyyy')}</p>
-                    <p className="text-sm text-gray-600 mb-2">{differenceInDays(new Date(), new Date(dat?.plantingDate))} {t('daysAfterPlanting')}</p>
-                    <div>
-                      {getHarvestTimelineStatus(new Date(dat?.harvestDate))}
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
-                      <Edit size={24} />
-                    </button>
-                    <button className="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-colors">
-                      <Trash2 size={24} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))} */}
-            {plantingData.length === 0 && (
-              <div className="p-8 text-center text-gray-500">
-                <Sprout size={32} className="mx-auto mb-2 opacity-50" />
-                <p>Belum ada tanaman</p>
-              </div>
-            )}
+          <PlantingList />
+        </div>
+
+        {/* Measurements in this Installation */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
+          <div className="p-4 border-b border-gray-100">
+            <div className="flex justify-between items-center">
+              <h3 className="font-semibold text-gray-800">Data Pengukuran</h3>
+              <Button 
+                variant="primary" 
+                size="s" 
+                icon={<Plus size={14} />}
+                onClick={() => navigate(`/add-measurement?id=${params?.id}`)}
+              >Tambah</Button>
+            </div>
           </div>
+          <MeasurementList />
         </div>
       </div>
     </div>

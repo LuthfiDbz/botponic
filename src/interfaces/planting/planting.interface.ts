@@ -15,4 +15,12 @@ export interface Planting {
   notes?: string,
   createdAt?: string;
   updatedAt?: string;
+  status: number
+}
+
+export interface FormPlanting {
+  installationId: string,
+  plantId: string,
+  qty: number,
+  notes: string
 }
